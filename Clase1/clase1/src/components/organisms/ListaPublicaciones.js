@@ -6,13 +6,15 @@ export const ListaPublicaciones = () => {
   const [publicaciones, setPublicaciones] = React.useState(undefined);
   const [usuarios, setUsuarios] = React.useState(undefined);
 
-  const onChange = (event, indiceElemento) => {
-    const value = event.target.value;
+  const onChange = (value, indiceElemento) => {
+    const nuevaLista = [...publicaciones];
+    const publicacion = {
+      ...nuevaLista[indiceElemento],
+      body: value,
+    };
+    nuevaLista[indiceElemento] = publicacion;
 
-    const nuevaLista2 = [...publicaciones];
-    nuevaLista2[indiceElemento].body = value;
-
-    setPublicaciones(nuevaLista2);
+    setPublicaciones(nuevaLista);
   };
 
   async function getData() {
@@ -63,7 +65,7 @@ export const ListaPublicaciones = () => {
               key={publicacion.id}
               publicacion={publicacion}
               usuario={getUsuarioPorId(publicacion.userId)}
-              onChange={(event) => onChange(event, index)}
+              onChange={(event) => onChange(event.target.value, index)}
             />
           ))}
         </ol>
