@@ -1,6 +1,16 @@
 import React, { createContext, useContext, useState } from "react";
+import { Todo } from "../models/ITodos";
 
-const TodosContext = createContext({
+interface TodosContextProps {
+  todos: Todo[];
+  cargandoTodos: boolean;
+  todoActual: Todo | undefined;
+  obtenerTodos: () => void;
+  obtenerTodoPorId: (id: number) => void;
+  setTodoActual: (todo: Todo | undefined) => void;
+}
+
+const TodosContext = createContext<TodosContextProps>({
   todos: [],
   todoActual: undefined,
   cargandoTodos: false,
@@ -9,10 +19,12 @@ const TodosContext = createContext({
   setTodoActual: () => {},
 });
 
-export const TodosContextProvider = ({ children }) => {
-  const [todos, setTodos] = useState([]);
-  const [todoActual, setTodoActual] = useState(undefined);
-  const [cargandoTodos, setCargandoTodos] = useState(true);
+export const TodosContextProvider: React.FC<React.PropsWithChildren> = ({
+  children,
+}) => {
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const [todoActual, setTodoActual] = useState<Todo | undefined>(undefined);
+  const [cargandoTodos, setCargandoTodos] = useState(false);
 
   const obtenerTodos = React.useCallback(async () => {
     try {
@@ -28,7 +40,7 @@ export const TodosContextProvider = ({ children }) => {
     }
   }, []);
 
-  const obtenerTodoPorId = React.useCallback(async (id) => {
+  const obtenerTodoPorId = React.useCallback(async (id: number) => {
     try {
       setCargandoTodos(true);
       const response = await fetch(
@@ -47,7 +59,7 @@ export const TodosContextProvider = ({ children }) => {
   //   obtenerTodos();
   // }, [obtenerTodos]);
 
-  const contextValue = {
+  const contextValue: TodosContextProps = {
     todos,
     todoActual,
     cargandoTodos,
@@ -63,4 +75,4 @@ export const TodosContextProvider = ({ children }) => {
   );
 };
 
-export const useTodos = () => useContext(TodosContext);
+export const useTodos = () => useContext<TodosContextProps>(TodosContext);

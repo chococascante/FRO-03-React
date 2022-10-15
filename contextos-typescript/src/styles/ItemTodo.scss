@@ -1,0 +1,28 @@
+@import './variables.scss';
+
+li {
+  background-color: $colorEtiqueta;
+  text-transform: capitalize;
+}
+
+.todo-item {
+  list-style-type: circle;
+  background-color: $colorClase;
+}
+#lista {
+  font-weight: normal;
+  background-color: $colorId;
+}
+
+.item-todo {
+  background-color: $colorEtiqueta;
+  text-transform: capitalize;
+}
+
+.item-todo-nombre {
+  color: red
+}
+
+.item-todo-sin-nombre {
+  color: blue
+}
