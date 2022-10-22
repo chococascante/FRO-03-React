@@ -11,13 +11,12 @@ import { createContext } from "react";
 import { useNavigate } from "react-router-dom";
 
 const firebaseCredentials: FirebaseOptions = {
-  apiKey: "AIzaSyAeHTgHh7dP6z5Szgy-D8ZSqyMvX9BG_CI",
-  authDomain: "clasereact-2f233.firebaseapp.com",
-  projectId: "clasereact-2f233",
-  storageBucket: "clasereact-2f233.appspot.com",
-  messagingSenderId: "841639803877",
-  appId: "1:841639803877:web:d239a00abd115cb3d40d0c",
-  measurementId: "G-J8XQD4BP85",
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
 };
 
 export interface FirebaseContextProps {

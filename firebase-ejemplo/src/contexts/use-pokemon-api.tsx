@@ -1,4 +1,6 @@
 import React from "react";
+import { useQuery } from "react-query";
+import { fetchPokemon } from "../queries/pokemon";
 
 interface PokemonListItem {
   name: string;
@@ -23,26 +25,16 @@ export const PokeApiContextProvider: React.FC<React.PropsWithChildren> = ({
   const [pokemon, setPokemon] = React.useState([]);
   const [pokemonLimit, setPokemonLimit] = React.useState(20);
   const [pokemonOffset, setPokemonOffset] = React.useState(0);
-
-  const getPokemon = React.useCallback(
-    async (offSet: number = pokemonOffset, limit: number = pokemonLimit) => {
-      try {
-        const response = await fetch(
-          `https://pokeapi.co/api/v2/pokemon/?offset=${offSet}&limit=${limit}`
-        );
-        const data = await response.json();
-        setPokemon(data.results);
-      } catch (error) {
-        console.log(error);
-      }
-    },
-    []
+  const { data, isLoading, refetch } = useQuery(
+    ["pokemon", pokemonOffset, pokemonLimit],
+    () => fetchPokemon(pokemonOffset, pokemonLimit)
   );
+
+  console.log(data);
 
   const getNextPokemon = React.useCallback(async () => {
     try {
       const newOffSet = pokemonOffset + pokemonLimit;
-      await getPokemon(newOffSet);
       setPokemonOffset(newOffSet);
     } catch (error) {
       console.log(error);
@@ -53,20 +45,15 @@ export const PokeApiContextProvider: React.FC<React.PropsWithChildren> = ({
     try {
       const newOffSet = pokemonOffset - pokemonLimit;
       if (newOffSet < 0) return;
-      await getPokemon(newOffSet);
       setPokemonOffset(newOffSet);
     } catch (error) {
       console.log(error);
     }
   }, []);
 
-  React.useEffect(() => {
-    getPokemon();
-  }, []);
-
-  const contextValue = React.useMemo(
+  const contextValue: PokeApiContextProps = React.useMemo(
     () => ({ pokemon, getNextPokemon, getPreviousPokemon }),
-    [pokemon]
+    [pokemon, getNextPokemon, getPreviousPokemon]
   );
 
   return (
