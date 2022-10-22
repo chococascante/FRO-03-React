@@ -1,4 +1,11 @@
 import React from "react";
+import { useQuery } from "react-query";
+import {
+  getNowPlayingMovies,
+  getPopularMovies,
+  getTopRatedMovies,
+  getUpcomingMovies,
+} from "../queries/movies";
 
 interface Movie {
   poster_path: string;
@@ -18,90 +25,50 @@ interface Movie {
 }
 
 interface MovieApiContextProps {
-  movies: Movie[];
-  getNowPlayingMovies: () => Promise<void>;
-  getPopularMovies: () => Promise<void>;
-  getTopRatedMovies: () => Promise<void>;
-  getUpcomingMovies: () => Promise<void>;
+  nowPlayingMovies: Movie[];
+  popularMovies: Movie[];
+  topRatedMovies: Movie[];
+  upComingMovies: Movie[];
 }
 
 const MoviesContext = React.createContext<MovieApiContextProps>({
-  movies: [],
-  getNowPlayingMovies: () => Promise.resolve(),
-  getPopularMovies: () => Promise.resolve(),
-  getTopRatedMovies: () => Promise.resolve(),
-  getUpcomingMovies: () => Promise.resolve(),
+  nowPlayingMovies: [],
+  popularMovies: [],
+  topRatedMovies: [],
+  upComingMovies: [],
 });
 
 export const MoviesContextProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
-  const [movies, setMovies] = React.useState<Movie[]>([]);
   const [moviesPage, setMoviesPage] = React.useState(1);
+  const { data: nowPlayingMovies } = useQuery(
+    ["nowPlayingMovies", moviesPage],
+    () => getNowPlayingMovies(moviesPage)
+  );
 
-  const getNowPlayingMovies = React.useCallback(async () => {
-    try {
-      const response = await fetch(
-        `${process.env.REACT_APP_MOVIES_ENDPOINT}/movie/now_playing?api_key=${process.env.REACT_APP_MOVIES_API_KEY}&language=en-US&page=${moviesPage}`
-      );
-      const data = await response.json();
-      setMovies(data.results);
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
+  const { data: popularMovies } = useQuery(["popularMovies", moviesPage], () =>
+    getPopularMovies(moviesPage)
+  );
 
-  const getPopularMovies = React.useCallback(async () => {
-    try {
-      const response = await fetch(
-        `${process.env.REACT_APP_MOVIES_ENDPOINT}/movie/popular?api_key=${process.env.REACT_APP_MOVIES_API_KEY}&language=en-US&page=${moviesPage}`
-      );
-      const data = await response.json();
-      setMovies(data.results);
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
+  const { data: topRatedMovies } = useQuery(
+    ["topRatedMovies", moviesPage],
+    () => getTopRatedMovies(moviesPage)
+  );
 
-  const getTopRatedMovies = React.useCallback(async () => {
-    try {
-      const response = await fetch(
-        `${process.env.REACT_APP_MOVIES_ENDPOINT}/movie/top_rated?api_key=${process.env.REACT_APP_MOVIES_API_KEY}&language=en-US&page=${moviesPage}`
-      );
-      const data = await response.json();
-      setMovies(data.results);
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
-
-  const getUpcomingMovies = React.useCallback(async () => {
-    try {
-      const response = await fetch(
-        `${process.env.REACT_APP_MOVIES_ENDPOINT}/movie/upcoming?api_key=${process.env.REACT_APP_MOVIES_API_KEY}&language=en-US&page=${moviesPage}`
-      );
-      const data = await response.json();
-      setMovies(data.results);
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
+  const { data: upComingMovies } = useQuery(
+    ["upComingMovies", moviesPage],
+    () => getUpcomingMovies(moviesPage)
+  );
 
   const contextValue: MovieApiContextProps = React.useMemo(
     () => ({
-      movies,
-      getNowPlayingMovies,
-      getPopularMovies,
-      getTopRatedMovies,
-      getUpcomingMovies,
+      nowPlayingMovies,
+      popularMovies,
+      topRatedMovies,
+      upComingMovies,
     }),
-    [
-      movies,
-      getNowPlayingMovies,
-      getPopularMovies,
-      getTopRatedMovies,
-      getUpcomingMovies,
-    ]
+    [nowPlayingMovies, popularMovies, topRatedMovies, upComingMovies]
   );
 
   return (

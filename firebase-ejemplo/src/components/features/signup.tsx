@@ -16,14 +16,7 @@ interface SignUpFormValues {
 
 const SignUpSchema = Yup.object().shape({
   email: Yup.string().email("Revise correo").required(),
-  password: Yup.string()
-    .required()
-    .matches(
-      new RegExp(
-        `^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{${MIN_PASSWORD_CHARACTERS},})`
-      ),
-      "La contraseña debe tener 8 caracteres"
-    ),
+  password: Yup.string().required(),
 });
 
 export const SignUp = () => {

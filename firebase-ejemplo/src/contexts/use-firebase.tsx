@@ -88,6 +88,10 @@ export const FirebaseProvider = ({ children }: any) => {
   );
 
   React.useEffect(() => {
+    // Query firebase for the user
+  }, [firebaseUser]);
+
+  React.useEffect(() => {
     const app = initializeApp(firebaseCredentials);
     setApp(app);
   }, []);
