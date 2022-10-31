@@ -6,6 +6,7 @@ import * as Yup from "yup";
 import { TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { AuthPage } from "../layouts/AuthPage";
+import { AppLayout } from "../layouts/AppLayout";
 
 const MIN_PASSWORD_CHARACTERS = 8;
 

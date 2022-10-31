@@ -25,38 +25,41 @@ interface Movie {
 }
 
 interface MovieApiContextProps {
-  nowPlayingMovies: Movie[];
-  popularMovies: Movie[];
-  topRatedMovies: Movie[];
-  upComingMovies: Movie[];
+  nowPlayingMovies: Movie[] | undefined;
+  popularMovies: Movie[] | undefined;
+  topRatedMovies: Movie[] | undefined;
+  upComingMovies: Movie[] | undefined;
+  setMoviesPage: (page: number) => void;
 }
 
 const MoviesContext = React.createContext<MovieApiContextProps>({
-  nowPlayingMovies: [],
-  popularMovies: [],
-  topRatedMovies: [],
-  upComingMovies: [],
+  nowPlayingMovies: undefined,
+  popularMovies: undefined,
+  topRatedMovies: undefined,
+  upComingMovies: undefined,
+  setMoviesPage: () => {},
 });
 
 export const MoviesContextProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
   const [moviesPage, setMoviesPage] = React.useState(1);
-  const { data: nowPlayingMovies } = useQuery(
+  const { data: nowPlayingMovies } = useQuery<Movie[]>(
     ["nowPlayingMovies", moviesPage],
     () => getNowPlayingMovies(moviesPage)
   );
 
-  const { data: popularMovies } = useQuery(["popularMovies", moviesPage], () =>
-    getPopularMovies(moviesPage)
+  const { data: popularMovies } = useQuery<Movie[]>(
+    ["popularMovies", moviesPage],
+    () => getPopularMovies(moviesPage)
   );
 
-  const { data: topRatedMovies } = useQuery(
+  const { data: topRatedMovies } = useQuery<Movie[]>(
     ["topRatedMovies", moviesPage],
     () => getTopRatedMovies(moviesPage)
   );
 
-  const { data: upComingMovies } = useQuery(
+  const { data: upComingMovies } = useQuery<Movie[]>(
     ["upComingMovies", moviesPage],
     () => getUpcomingMovies(moviesPage)
   );
@@ -67,8 +70,15 @@ export const MoviesContextProvider: React.FC<React.PropsWithChildren> = ({
       popularMovies,
       topRatedMovies,
       upComingMovies,
+      setMoviesPage,
     }),
-    [nowPlayingMovies, popularMovies, topRatedMovies, upComingMovies]
+    [
+      nowPlayingMovies,
+      popularMovies,
+      topRatedMovies,
+      upComingMovies,
+      setMoviesPage,
+    ]
   );
 
   return (
@@ -77,3 +87,6 @@ export const MoviesContextProvider: React.FC<React.PropsWithChildren> = ({
     </MoviesContext.Provider>
   );
 };
+
+export const useMovieContext = () =>
+  React.useContext<MovieApiContextProps>(MoviesContext);

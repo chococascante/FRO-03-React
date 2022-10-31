@@ -4,6 +4,8 @@ import { fetchPokemon } from "../queries/pokemon";
 import axios from "axios";
 import { getTeams, saveTeam } from "../services/firebase/pokemon";
 import { useFirebase } from "./use-firebase";
+import { useGetPokemonByName } from "../hooks/use-get-pokemon";
+import { useGetPokemons } from "../hooks/use-get-pokemons";
 
 export interface PokemonListItem {
   name: string;
@@ -43,13 +45,17 @@ export const PokeApiContextProvider: React.FC<React.PropsWithChildren> = ({
   const [pokemonLimit, setPokemonLimit] = React.useState(20);
   const [pokemonOffset, setPokemonOffset] = React.useState(0);
   const [selectedTeam, setSelectedTeam] = React.useState<Pokemon[]>([]);
-  const {
-    data: pokemon,
-    isLoading,
-    refetch,
-  } = useQuery<Pokemon[]>(["pokemon", pokemonOffset, pokemonLimit], () =>
-    fetchPokemon(pokemonOffset, pokemonLimit)
+  const { data: pokemon, isLoading } = useQuery<Pokemon[]>(
+    ["pokemon", pokemonOffset, pokemonLimit],
+    () => fetchPokemon(pokemonOffset, pokemonLimit)
   );
+
+  console.log("Rest", pokemon);
+
+  const { data: pokemons, error, loading, refetch } = useGetPokemons();
+  const { data: pokemoByName } = useGetPokemonByName("pikachu");
+
+  console.log("GraphQL", pokemons?.pokemons?.results);
 
   const addPokemonToTeam = (pokemon: Pokemon) => {
     setSelectedTeam(selectedTeam.concat(pokemon));
