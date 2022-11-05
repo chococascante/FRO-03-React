@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`(Atom) TextInput debería ser igual al snapshot 1`] = `
+<div>
+  <label
+    class="flex flex-col mb-6 text-base"
+  >
+    <span />
+    <input
+      placeholder="Ingrese su nombre"
+      type="text"
+      value=""
+    />
+  </label>
+</div>
+`;

@@ -5,6 +5,7 @@ export interface TextInputProps
   label: string;
   type: "text" | "password" | "email" | "number";
   placeholder?: string;
+  helperText?: string;
 }
 
 export const TextInput: React.FC<TextInputProps> = ({
@@ -12,12 +13,14 @@ export const TextInput: React.FC<TextInputProps> = ({
   type,
   value,
   placeholder,
+  helperText,
   ...props
 }) => {
   return (
     <label className="flex flex-col mb-6 text-base">
       <span>{label}</span>
       <input placeholder={placeholder} type={type} value={value} {...props} />
+      {helperText && <p data-testid="helper-text">{helperText}</p>}
     </label>
   );
 };
